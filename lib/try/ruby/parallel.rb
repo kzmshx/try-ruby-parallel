@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
-require_relative "parallel/version"
-
 require "parallel"
 
-Parallel.each(1..100000, in_processes: 1000) do |i|
-  puts i
-end
+module Try
+  module Ruby
+    def array_map(array, &callback)
+      array.map { |e| callback.call e }
+    end
 
-Parallel.each(1..100000, in_threads: 1000) do |i|
-  puts i
+    def array_map_parallel(array, &callback)
+      Parallel.map(array) { |e| callback.call e }
+    end
+
+    module_function :array_map
+    module_function :array_map_parallel
+  end
 end
